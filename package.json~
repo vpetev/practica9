@@ -6,10 +6,10 @@
     "start": "node ./bin/www"
   },
 
-    "engines":{
+"engines":{
 	"node": "5.8.0",
 	"npm": "3.7.3"
-  },
+},
 
   "dependencies": {
     "body-parser": "~1.13.2",
