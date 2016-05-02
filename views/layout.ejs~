@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='icon' href='favicon.ico' type='image/x-icon' />
+  </head>
+
+  <body>
+
+	<nav>
+		<a href="/">Inicio</a>
+		<a href="/question">Preguntas</a>
+	</nav>
+
+	<section>
+		<div><%- body%></div>
+	</section>
+
+	
+	<footer>
+		<a href="http://www.wikipedia.org/wiki/Quiz"> Que es un Quiz?</a>
+	</footer>
+
+  </body>	
+</html>
