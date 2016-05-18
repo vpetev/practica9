@@ -28,26 +28,26 @@ var sequelize = new Sequelize(url,
 var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
 
 // sequelize.sync() crea e inicializa tabla de preguntas en DB
-sequelize
-.sync()
-.then(function(){ // sync() crea la tabla quiz
- return Quiz
-   .count()
-   .then(function(c){
-    if(c === 0){ // la tabala se iniciliza si esta vacia
-     return Quiz
-       //.create({question: 'Capital de Italia',   answer: 'Roma'})
-	.bulkCreate([ {	question: 'Capital de Italia', answer: 'Roma'},
-		      { question: 'Capital de Portugal', answer: 'Lisboa'}
-		   ])
-       .then(function(){
-        console.log('Base de datos inicializada con datos');
-       });
-    }
-   })
-}).catch(function(error){
- console.log('Error sincronizando la base de datos:', error);
- process.exit(1);
-});
+//sequelize
+//.sync()
+//.then(function(){ // sync() crea la tabla quiz
+// return Quiz
+//   .count()
+//   .then(function(c){
+//    if(c === 0){ // la tabala se iniciliza si esta vacia
+//    return Quiz
+//       //.create({question: 'Capital de Italia',   answer: 'Roma'})
+//	.bulkCreate([ {	question: 'Capital de Italia', answer: 'Roma'},
+//		      { question: 'Capital de Portugal', answer: 'Lisboa'}
+//		   ])
+//       .then(function(){
+//        console.log('Base de datos inicializada con datos');
+//       });
+//    }
+//   })
+//}).catch(function(error){
+// console.log('Error sincronizando la base de datos:', error);
+// process.exit(1);
+//});
 
 exports.Quiz = Quiz; // exportar definicion de tabla Quiz
