@@ -10,6 +10,7 @@ var flash = require('express-flash');
 var methodOverride = require('method-override');
 
 var routes = require('./routes/index');
+var sessionController=require('./controllers/session_controller');
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use(session({secret: "Quiz 2016",
 app.use(methodOverride('_method', {methods: ["POST", "GET"]}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use(partials());
 app.use(flash());
 
@@ -56,6 +58,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
+app.use('/', sessionController.metodologout);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

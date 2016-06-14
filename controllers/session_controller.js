@@ -121,9 +121,10 @@ exports.create = function(req, res, next) {
     authenticate(login, password)
         .then(function(user) {
             if (user) {
+		var taux = Date.now() + 120000;
     	        // Crear req.session.user y guardar campos id y username
     	        // La sesión se define por la existencia de: req.session.user
-    	        req.session.user = {id:user.id, username:user.username, isAdmin:user.isAdmin};
+    	        req.session.user = {id:user.id, username:user.username, isAdmin:user.isAdmin, finish: taux};
 
                 res.redirect(redir); // redirección a redir
             } else {
@@ -135,6 +136,21 @@ exports.create = function(req, res, next) {
             req.flash('error', 'Se ha producido un error: ' + error);
             next(error);        
     });
+};
+
+exports.metodologout = function(req, res, next) {
+    if (req.session.user) {
+        var tnow = Date.now();
+        if (req.session.user.finish > tnow) {
+            req.session.user.finish = tnow +120000;
+            next();
+        } else {
+            delete req.session.user;
+            res.redirect("/session");
+        }
+    } else {
+        next();
+    }
 };
 
 

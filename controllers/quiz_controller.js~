@@ -33,7 +33,7 @@ var cloudinary_image_options = { crop: 'limit', width: 200, height: 200, radius:
 
 // Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId) {
-	models.Quiz.findById(quizId, { include: [ models.Comment, models.Attachment ] })
+	models.Quiz.findById(quizId, {include: [{model:models.Attachment}, {model:models.Comment, include:[{model:models.User, as:'Author'}]}]})
   		.then(function(quiz) {
       		if (quiz) {
         		req.quiz = quiz;
@@ -64,25 +64,67 @@ exports.ownershipRequired = function(req, res, next){
 
 // GET /quizzes
 exports.index = function(req, res, next) {
-	models.Quiz.findAll({ include: [ models.Attachment ] })
-		.then(function(quizzes) {
-			res.render('quizzes/index.ejs', { quizzes: quizzes});
-		})
-		.catch(function(error) {
-			next(error);
-		});
+
+     if(req.query.search){
+    var search = req.query.search.split(' ');
+     search = '%' + search.join('%') + '%';
+     models.Quiz.findAll({where: ['question like ?', search], include: [ models.Attachment ] })
+    .then(function(quizzes) {
+      res.render('quizzes/index.ejs', { quizzes: quizzes});
+    })
+    .catch(function(error) {
+      next(error);
+    });
+  }
+  
+  if(req.params.format=== 'json') {
+    models.Quiz.findAll()
+    .then(function(quizzes){
+      res.json('quizzes/index.ejs',{ quizzes:quizzes});
+    })
+    .catch(function(error){
+      next(error);
+    });
+  }
+  
+  else {
+    models.Quiz.findAll()
+    .then(function(quizzes){
+      res.render('quizzes/index.ejs',{quizzes:quizzes});
+    })
+    .catch(function(error){
+      next(error);
+    });
+  }
 };
 
 
 // GET /quizzes/:quizId
 exports.show = function(req, res, next) {
 
-	var answer = req.query.answer || '';
-
-	res.render('quizzes/show', {quiz: req.quiz,
-								answer: answer});
+	 if(req.params.format=== 'json') {
+    models.Quiz.findById(req.params.quizId)
+    .then(function(quiz){
+      if(quiz){
+        var answer = req.query.answer || '';
+        res.json('quizzes/show.ejs',{ quiz: req.quiz, answer: answer});
+      }})
+    .catch(function(error){
+      next(error);
+    });
+  }
+  else {
+    models.Quiz.findById(req.params.quizId)
+    .then(function(quiz){
+      if(quiz){
+        var answer = req.query.answer || '';
+        res.render('quizzes/show.ejs',{quiz: req.quiz, answer: answer});
+    }})
+    .catch(function(error){
+      next(error);
+    });
+  }
 };
-
 
 // GET /quizzes/:quizId/check
 exports.check = function(req, res, next) {
